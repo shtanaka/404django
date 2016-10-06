@@ -2,21 +2,23 @@ from django.shortcuts import render, get_object_or_404
 from .models import Question, Choice
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-
-# Create your views here.
 from django.http import HttpResponse
-def index(request):
-	latest_question_list = Question.objects.order_by('-pub_date')[:5]
-	context = {'latest_question_list': latest_question_list}
-	return render(request, 'index.html', context)
-		
-def details(request, question_id):
-	question = get_object_or_404(Question, pk=question_id)
-	return render(request, 'details.html', {'question': question})
+from django.views import generic
+# Create your views here.
 
-def results(request, question_id):
-	question = get_object_or_404(Question, pk=question_id)
-	return render(request, 'results.html', {'question': question})
+class IndexView(generic.ListView):
+	template_name = 'index.html'
+	context_object_name = 'latest_question_list'
+	def get_queryset(self):
+		return Question.objects.order_by('-pub_date')[:5]
+		
+class DetailsView(request, question_id):
+	model = Question
+	template_name = 'details.html';
+
+class ResultsView(request, question_id):
+	model = Question
+	template_name = 'results.html'
 
 def vote(request, question_id):
 	question = get_object_or_404(Question, pk=question_id)
